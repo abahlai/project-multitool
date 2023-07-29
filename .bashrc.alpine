@@ -1,0 +1,39 @@
+# Starship init
+eval "$(starship init bash)"
+
+# direnv hook init
+eval "$(direnv hook bash)"
+
+# Kubectl completion and aliases
+source <(kubectl completion bash)
+alias k=kubectl
+alias ls=exa
+alias vi=vim
+alias gst='git status'
+complete -F __start_kubectl k
+export EDITOR="vim"
+
+# Enable fuzzy search
+source /usr/share/fzf/key-bindings.bash
+
+# Terraform aliases
+[ -f ~/.terraform_aliases ] && source ~/.terraform_aliases
+function terraform() { echo "+ terraform $@"; command terraform $@; }
+# Terragrunt alises
+[ -f ~/.terragrunt_aliases ] && source ~/.terragrunt_aliases
+function terragrunt() { echo "+ terragrunt $@"; command terragrunt $@; }
+
+# Awesome oneliners
+b64d () {
+  echo "$1" | base64 -d ; echo
+}
+
+b64e () {
+  echo -n "$1" | base64
+}
+
+alias cls='printf "\033c"'
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

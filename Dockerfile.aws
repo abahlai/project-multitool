@@ -1,0 +1,32 @@
+FROM archlinux:base as installer
+
+RUN pacman -Sy unzip --noconfirm \
+  && curl -L "https://github.com/itaysk/kubectl-neat/releases/download/v2.0.3/kubectl-neat_linux_amd64.tar.gz" -o "kubectl-neat.tar.gz" \
+  && tar -xzvf kubectl-neat.tar.gz \
+  && mv kubectl-neat kneat
+
+### Multi-tool image setup ###
+FROM archlinux:base
+ARG BIN_DIR=/usr/local/bin
+
+# Copy prepared binaries from installer container
+COPY --from=installer kneat $BIN_DIR/kneat
+
+# Install needed tools with pachage manager
+RUN pacman -Syu bash-completion exa fzf git jq keychain kubectl kubectx mc openssh perl postgresql python-pre-commit starship vim \
+    --noconfirm \
+    && pacman -Scc --noconfirm
+
+# Install ibmcloud cli and enable plugins
+RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | bash \
+    && ibmcloud plugin install container-service
+
+# Install tools
+RUN curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash \
+    && curl -sfL https://direnv.net/install.sh | bash
+
+# Add certificates for terraform etcd connection
+COPY certs/* /etc/ca-certificates/trust-source/anchors
+RUN update-ca-trust
+
+CMD [ "bash" ]

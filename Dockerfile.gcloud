@@ -1,0 +1,8 @@
+FROM google/cloud-sdk:alpine
+
+RUN apk add --no-cache bash-completion ncurses \
+	&& apk add --no-cache exa fzf jq k9s kubectl openssl perl starship vim \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && gcloud components install gke-gcloud-auth-plugin
+
+CMD [ "bash" ]

@@ -1,0 +1,18 @@
+[cmd_duration]
+disabled = true
+
+[container]
+disabled = true
+
+[aws]
+format = "[$symbol$region]($style) "
+style = "bold bright-red"
+symbol = "🅰 "
+[aws.region_aliases]
+us-east-1 = "NV"
+us-west-2 = "OR"
+
+[kubernetes]
+format = '[⛵ $context \($namespace\)](bold green) '
+disabled = false
+[kubernetes.context_aliases]
